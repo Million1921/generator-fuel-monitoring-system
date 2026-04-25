@@ -1,0 +1,30 @@
+import prisma from "@/lib/db"
+import { NextRequest, NextResponse } from "next/server"
+
+// GET /api/regions — list all regions
+export async function GET() {
+  try {
+    const regions = await prisma.region.findMany({
+      include: { sites: true, technicians: true },
+      orderBy: { name: "asc" },
+    })
+    return NextResponse.json(regions)
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message }, { status: 500 })
+  }
+}
+
+// POST /api/regions — add a new region
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json()
+    const region = await prisma.region.create({
+      data: {
+        name: body.name,
+      },
+    })
+    return NextResponse.json(region, { status: 201 })
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message }, { status: 500 })
+  }
+}

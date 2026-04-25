@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
@@ -54,8 +53,9 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: oklch(61.997% 0.14515 22.201);
+  /* lime-500 */
+  --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -76,8 +76,8 @@
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-accent: oklch(0.975 0.015 165); /* even lighter emerald */
+  --sidebar-accent-foreground: oklch(0.613 0.17 165.75); /* exact emerald-600 */
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 }
@@ -120,10 +120,45 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-hidden h-svh;
   }
+
   html {
-    @apply font-sans;
+    @apply font-sans overflow-hidden h-svh;
+  }
+}
+
+/* Global Scrollbar Hiding for Y-Axis */
+*::-webkit-scrollbar {
+  width: 0px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 10px;
+  border: 2px solid #f1f5f9;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+@layer utilities {
+  .custom-scrollbar {
+    /* Inherits global styles above */
+  }
+
+  /* Specific isolation for table horizontal scroll */
+  .table-container {
+    @apply overflow-x-auto overflow-y-hidden max-w-full relative;
   }
 }

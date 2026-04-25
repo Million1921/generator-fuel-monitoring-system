@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Generator Fuel Monitoring System
+
+A comprehensive, automated system for tracking fuel deliveries, generator running hours, and consumption deviations for Ethio Telecom sites.
+
+## Features
+
+- **Automated Fuel Journal**: Captures physical delivery records (FuelRefills) automatically.
+- **Consumption Analytics**: Calculates running hour differences and tracks fuel usage deviations.
+- **Site Management**: Manage generators and site metadata across different regions.
+- **Mobile Optimized**: Responsive PWA interface for field engineers to record data on-site.
+- **Work Order Tracking**: Integration with maintenance work orders for accurate financial reporting.
+
+## Technology Stack
+
+- **Framework**: [Next.js](https://nextjs.org) (App Router)
+- **Database**: [PostgreSQL](https://www.postgresql.org) with [Prisma ORM](https://www.prisma.io)
+- **Authentication**: [Better Auth](https://better-auth.com)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com)
+- **UI Components**: [Radix UI](https://www.radix-ui.com) & [Lucide Icons](https://lucide.dev)
 
 ## Getting Started
 
-First, run the development server:
+1. **Environment Setup**:
+   Create a `.env` file with your database connection string and authentication secrets.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Database Migration**:
+   ```bash
+   npx prisma migrate dev
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. **Run Development Server**:
+   ```bash
+   npm run dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. **Production Build**:
+   ```bash
+   npm run build
+   ```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+- `src/app`: Next.js routes and pages (Main, Auth, and Mobile layouts).
+- `src/features`: Shared logic, components, and queries grouped by business domain.
+- `src/components`: Generic UI components.
+- `src/lib`: Shared utilities, constants, and configuration.
+- `prisma`: Database schema and seed scripts.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+© 2026 Generator Fuel Monitoring System
