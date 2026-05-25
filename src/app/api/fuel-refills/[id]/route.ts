@@ -1,5 +1,8 @@
+export const dynamic = "force-dynamic";
 import prisma from "@/lib/db"
 import { NextRequest, NextResponse } from "next/server"
+
+export const dynamic = "force-dynamic"
 
 // GET /api/fuel-refills/[id]
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
