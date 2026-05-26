@@ -202,6 +202,7 @@ async function main() {
                 dgCapacity: String(item.dgCapacity || ''),
                 dgType: item.dgType || '',
                 regionId: naarRegionId,
+                region: 'NAAR',
             },
             create: {
                 siteId: item.siteId,
@@ -210,6 +211,7 @@ async function main() {
                 dgCapacity: String(item.dgCapacity || ''),
                 dgType: item.dgType || '',
                 regionId: naarRegionId,
+                region: 'NAAR',
                 gpsCoordinates: `9.${Math.floor(Math.random() * 100)}, 38.${Math.floor(Math.random() * 100)}`,
                 installationDate: new Date('2022-01-01')
             }
