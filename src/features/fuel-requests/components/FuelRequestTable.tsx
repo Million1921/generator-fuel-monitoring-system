@@ -29,7 +29,7 @@ import { Input } from "@/components/ui/input"
 import { Pagination } from "@/components/ui/Pagination"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { approveToManager, approveToAdmin, createWorkOrder, deleteFuelRequest } from "@/features/fuel-requests/actions"
-import { useSession } from "@/lib/auth-client"
+import { useUser } from "@clerk/nextjs"
 
 interface FuelRequestTableProps {
   requests: any[]
@@ -58,8 +58,8 @@ export function FuelRequestTable({
   dateFrom,
   dateTo
 }: FuelRequestTableProps) {
-  const { data: session } = useSession()
-  const userRole = (session?.user as any)?.role || "TECHNICIAN"
+  const { user } = useUser()
+  const userRole = (user?.publicMetadata?.role as string) || "ADMIN"
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const pathname = usePathname()

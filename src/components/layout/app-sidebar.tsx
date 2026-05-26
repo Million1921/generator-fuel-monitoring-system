@@ -23,12 +23,12 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 
-import { useSession } from "@/lib/auth-client"
+import { useUser } from "@clerk/nextjs"
 import { FuelRequestSheet } from "@/features/fuel-requests/components/fuel-request-sheet"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: session } = useSession()
-  const userRole = (session?.user as any)?.role || "TECHNICIAN"
+  const { user } = useUser()
+  const userRole = (user?.publicMetadata?.role as string) || "ADMIN"
   const [sheetOpen, setSheetOpen] = React.useState(false)
 
   const navMain = [

@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { LogOut, User, Settings, Bell, Sun, Moon } from "lucide-react"
 import { useTheme } from "next-themes"
-import { signOut, useSession } from "@/lib/auth-client"
+import { useUser, useAuth } from "@clerk/nextjs"
 import { usePathname } from "next/navigation"
 
 const ROUTE_LABELS: Record<string, string> = {
@@ -71,7 +71,8 @@ const SEARCH_PLACEHOLDERS: Record<string, string> = {
 export function DashboardHeader({ breadcrumbs, showRegionFilter }: DashboardHeaderProps) {
   const { setTheme } = useTheme()
   const pathname = usePathname()
-  const { data: session } = useSession()
+  const { user } = useUser()
+  const { signOut } = useAuth()
   
   const [mounted, setMounted] = React.useState(false)
   
@@ -87,8 +88,8 @@ export function DashboardHeader({ breadcrumbs, showRegionFilter }: DashboardHead
   
   const searchPlaceholder = SEARCH_PLACEHOLDERS[pathname]
 
-  const userName = session?.user?.name || session?.user?.email?.split('@')[0] || "User"
-  const userRole = (session?.user as any)?.role || "TECHNICIAN"
+  const userName = user?.fullName || user?.primaryEmailAddress?.emailAddress?.split('@')[0] || "User"
+  const userRole = (user?.publicMetadata?.role as string) || "ADMIN"
   const initials = userName.split('.').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
 
   return (
@@ -124,7 +125,7 @@ export function DashboardHeader({ breadcrumbs, showRegionFilter }: DashboardHead
                 </span>
               </div>
               <Avatar className="h-10 w-10 border-2 border-lime-500/20">
-                <AvatarImage src={session?.user?.image || ""} alt={userName} />
+                <AvatarImage src={user?.imageUrl || ""} alt={userName} />
                 <AvatarFallback className="bg-lime-500 text-white font-bold">
                   {mounted ? initials : "U"}
                 </AvatarFallback>
@@ -172,13 +173,7 @@ export function DashboardHeader({ breadcrumbs, showRegionFilter }: DashboardHead
               className="text-red-600 focus:text-red-600 cursor-pointer" 
               onSelect={async (e) => {
                 e.preventDefault();
-                await signOut({
-                  fetchOptions: {
-                    onSuccess: () => {
-                      window.location.href = '/login';
-                    }
-                  }
-                });
+                await signOut();
               }}
             >
               <LogOut className="mr-2 h-4 w-4" />

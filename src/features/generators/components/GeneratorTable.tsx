@@ -27,7 +27,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
-import { useSession } from "@/lib/auth-client"
+import { useUser } from "@clerk/nextjs"
 import { useTransition } from "react"
 import { toast } from "sonner"
 import { deleteGenerator } from "@/features/generators/actions"
@@ -79,8 +79,8 @@ export function GeneratorTable({
   sortBy: currentSortBy,
   sortOrder: currentSortOrder
 }: GeneratorTableProps) {
-  const { data: session } = useSession()
-  const userRole = (session?.user as any)?.role || "TECHNICIAN"
+  const { user } = useUser()
+  const userRole = (user?.publicMetadata?.role as string) || "ADMIN"
   const canEdit = userRole === "ADMIN" || userRole === "MANAGER"
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
