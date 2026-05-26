@@ -27,6 +27,8 @@ export function CustomSignInForm({ className, ...props }: React.ComponentProps<"
     setError('')
 
     try {
+      if (!signIn || !setActive) return;
+
       const result = await signIn.create({
         identifier: emailAddress,
         password,
