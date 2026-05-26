@@ -11,8 +11,11 @@ import { Input } from "@/components/ui/input"
 
 export function CustomSignUpForm({ className, ...props }: React.ComponentProps<"form">) {
   const { isLoaded, signUp, setActive } = useSignUp()
+  const [firstName, setFirstName] = React.useState('')
+  const [lastName, setLastName] = React.useState('')
   const [emailAddress, setEmailAddress] = React.useState('')
   const [password, setPassword] = React.useState('')
+  const [confirmPassword, setConfirmPassword] = React.useState('')
   const [pendingVerification, setPendingVerification] = React.useState(false)
   const [code, setCode] = React.useState('')
   const [error, setError] = React.useState('')
@@ -32,7 +35,15 @@ export function CustomSignUpForm({ className, ...props }: React.ComponentProps<"
       if (!signUp || !setActive) return;
 
       if (!pendingVerification) {
+        if (password !== confirmPassword) {
+          setError('Passwords do not match')
+          setIsLoading(false)
+          return
+        }
+
         await signUp.create({
+          firstName,
+          lastName,
           emailAddress,
           password,
         })
@@ -41,15 +52,12 @@ export function CustomSignUpForm({ className, ...props }: React.ComponentProps<"
         setPendingVerification(true)
         setIsLoading(false)
       } else {
-        const completeSignUp = await signUp.attemptEmailAddressVerification({
-          code,
-        })
+        const completeSignUp = await signUp.attemptEmailAddressVerification({ code })
 
         if (completeSignUp.status === 'complete') {
           await setActive({ session: completeSignUp.createdSessionId })
           router.push('/dashboard')
         } else {
-          console.error(JSON.stringify(completeSignUp, null, 2))
           setError('Invalid verification code')
           setIsLoading(false)
         }
@@ -62,53 +70,100 @@ export function CustomSignUpForm({ className, ...props }: React.ComponentProps<"
   }
 
   return (
-    <form className={cn("flex flex-col gap-6", className)} onSubmit={submit} {...props}>
+    <form className={cn("flex flex-col gap-4", className)} onSubmit={submit} {...props}>
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
-          <p className="text-sm text-balance text-gray-500 mb-2">
-            {pendingVerification ? 'Enter the verification code sent to your email' : 'Enter your details below to create your account'}
+          <p className="text-sm text-gray-500 mb-2">
+            {pendingVerification
+              ? 'Enter the verification code sent to your email'
+              : 'Fill in the details below to create your account'}
           </p>
         </div>
+
         {error && (
           <div className="rounded-md bg-red-50/50 border border-red-100 p-3 text-sm text-red-500">
             {error}
           </div>
         )}
-        
+
         {!pendingVerification ? (
           <>
+            {/* First Name & Last Name side by side */}
+            <div className="flex gap-3">
+              <Field className="flex-1">
+                <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+                <Input
+                  id="firstName"
+                  type="text"
+                  placeholder="John"
+                  required
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="bg-blue-50/50 border-gray-200"
+                />
+              </Field>
+              <Field className="flex-1">
+                <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+                <Input
+                  id="lastName"
+                  type="text"
+                  placeholder="Doe"
+                  required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="bg-blue-50/50 border-gray-200"
+                />
+              </Field>
+            </div>
+
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input 
-                id="email" 
-                name="email" 
-                type="email" 
-                placeholder="m@example.com" 
-                required 
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
                 value={emailAddress}
                 onChange={(e) => setEmailAddress(e.target.value)}
                 className="bg-blue-50/50 border-gray-200"
               />
             </Field>
+
             <Field>
               <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input 
-                id="password" 
-                name="password" 
-                type="password" 
-                required 
+              <Input
+                id="password"
+                type="password"
+                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="bg-blue-50/50 border-gray-200"
               />
             </Field>
+
             <Field>
-              <Button type="submit" className="w-full bg-[#8cc63f] hover:bg-[#7ab130] text-white font-bold uppercase tracking-tight" disabled={isLoading}>
-                {isLoading ? "SIGNING UP..." : "SIGN UP"}
+              <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
+              <Input
+                id="confirmPassword"
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="bg-blue-50/50 border-gray-200"
+              />
+            </Field>
+
+            <Field>
+              <Button
+                type="submit"
+                className="w-full bg-[#8cc63f] hover:bg-[#7ab130] text-white font-bold uppercase tracking-tight"
+                disabled={isLoading}
+              >
+                {isLoading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT"}
               </Button>
             </Field>
 
-            <div className="relative mt-2 mb-2">
+            <div className="relative mt-1 mb-1">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-gray-200" />
               </div>
@@ -121,7 +176,13 @@ export function CustomSignUpForm({ className, ...props }: React.ComponentProps<"
               type="button"
               variant="outline"
               className="w-full border-gray-200 text-gray-600 hover:bg-gray-50 font-medium"
-              onClick={() => signUp.authenticateWithRedirect({ strategy: 'oauth_google', redirectUrl: '/sign-up/sso-callback', redirectUrlComplete: '/dashboard' })}
+              onClick={() =>
+                signUp.authenticateWithRedirect({
+                  strategy: 'oauth_google',
+                  redirectUrl: '/sign-up/sso-callback',
+                  redirectUrlComplete: '/dashboard',
+                })
+              }
               disabled={isLoading}
             >
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -144,26 +205,29 @@ export function CustomSignUpForm({ className, ...props }: React.ComponentProps<"
           <>
             <Field>
               <FieldLabel htmlFor="code">Verification Code</FieldLabel>
-              <Input 
-                id="code" 
-                name="code" 
-                type="text" 
-                placeholder="Enter 6-digit code" 
-                required 
+              <Input
+                id="code"
+                type="text"
+                placeholder="Enter 6-digit code"
+                required
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 className="bg-blue-50/50 border-gray-200 text-center tracking-widest text-lg"
               />
             </Field>
             <Field>
-              <Button type="submit" className="w-full bg-[#8cc63f] hover:bg-[#7ab130] text-white font-bold uppercase tracking-tight" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full bg-[#8cc63f] hover:bg-[#7ab130] text-white font-bold uppercase tracking-tight"
+                disabled={isLoading}
+              >
                 {isLoading ? "VERIFYING..." : "VERIFY EMAIL"}
               </Button>
             </Field>
             <Button
               type="button"
               variant="link"
-              className="text-gray-500 hover:text-gray-700 mt-2 text-sm mx-auto"
+              className="text-gray-500 hover:text-gray-700 text-sm mx-auto"
               onClick={() => {
                 setPendingVerification(false)
                 setCode('')
