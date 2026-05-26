@@ -8,7 +8,7 @@ export const auth = betterAuth({
     }),
     trustedOrigins: [
         "http://localhost:3000",
-        "https://gen-fuel-mon.vercel.app",
+        "https://generator-fuel-monitoring-system.vercel.app",
     ],
     emailAndPassword: {
         enabled: true,
