@@ -1,4 +1,4 @@
-import { SignUp } from '@clerk/nextjs'
+import { CustomSignUpForm } from '@/features/auth/components/CustomSignUpForm'
 import Image from 'next/image'
 
 export default function Page() {
@@ -19,24 +19,7 @@ export default function Page() {
           </div>
           
           <div className="w-full">
-            <SignUp 
-              routing="hash" 
-              appearance={{
-                elements: {
-                  rootBox: "w-full mx-auto",
-                  card: "shadow-none p-0 bg-transparent w-full",
-                  headerTitle: "hidden", 
-                  headerSubtitle: "text-gray-500 text-center mb-6 text-[15px]",
-                  formButtonPrimary: "bg-[#8cc63f] hover:bg-[#7ab130] text-white py-2.5 rounded-md font-bold text-[15px] shadow-sm",
-                  formFieldInput: "bg-[#f4f7fb] border-gray-200 py-2.5 focus:border-[#8cc63f] focus:ring-[#8cc63f]",
-                  formFieldLabel: "text-gray-700 font-medium text-sm",
-                  dividerLine: "bg-gray-200",
-                  dividerText: "text-gray-400",
-                  socialButtonsBlockButton: "border-gray-200 text-gray-600 hover:bg-gray-50",
-                  footerActionLink: "text-[#8cc63f] hover:text-[#7ab130]"
-                }
-              }}
-            />
+            <CustomSignUpForm />
           </div>
         </div>
       </div>
